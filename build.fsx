@@ -5,6 +5,7 @@
 #r "packages/FAKE/tools/FakeLib.dll"
 
 open Fake
+open Fake.FscHelper
 
 #I "packages/System.Runtime/lib/netcore50/"
 #I "packages/xunit.runner.console/tools/"
@@ -12,7 +13,7 @@ open Fake
 #I "packages/xunit.extensibility.core/lib/portable-net45+win8+wp8+wpa81/"
 #I "packages/Unquote/lib/net40/"
 
-//TODO need to switch to http://fsharp.github.io/FAKE/fsc.html
+// http://fsharp.github.io/FAKE/fsc.html
 
 // Properties
 let buildDir = "./build/"
@@ -23,26 +24,29 @@ Target "Clean" (fun _ ->
     CleanDirs [buildDir; testDir]
 )
 
-Target "BuildApp" (fun _ ->
-   !! "src/app/**/*.csproj"
-     |> MSBuildRelease buildDir "Build"
-     |> Log "AppBuild-Output: "
+// https://github.com/fsharp/FAKE/issues/1037
+Target "Source.dll" (fun _ ->
+  ["src/lib/dayOne.fs"] //!! "src/lib/*.fs"
+  |> Fsc (fun p ->
+           { p with Output = "Source.dll"
+                    FscTarget = Library })
 )
 
-Target "BuildTest" (fun _ ->
-    !! "src/test/**/*.csproj"
-      |> MSBuildDebug testDir "Build"
-      |> Log "TestBuild-Output: "
+Target "Tests.dll" (fun _ ->
+  ["src/test/dayOneTests.fs"] //!! "src/spec/*.fs"
+  |> Fsc (fun p ->
+            { p with Output = "Tests.dll"
+                     FscTarget = Library })
 )
 
 Target "Default" (fun _ ->
-    trace "Hello World from FAKE"
+    trace "All set."
 )
 
 // Dependencies
 "Clean"
-  ==> "BuildApp"
-  ==> "BuildTest"
+  ==> "Source.dll"
+  ==> "Tests.dll"
   ==> "Default"
 
 // start build
