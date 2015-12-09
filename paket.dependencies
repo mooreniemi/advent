@@ -1,6 +1,8 @@
 source https://nuget.org/api/v2
 
 nuget FSharp.Data
+nuget fake
+
 nuget xunit
 nuget xunit.runner.console
 nuget Unquote

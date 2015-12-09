@@ -1,10 +1,3 @@
-#r "../packages/System.Runtime/lib/netcore50/System.Runtime.dll"
-#r "../packages/xunit.extensibility.execution/lib/net45/xunit.execution.desktop.dll"
-#r "../packages/xunit.extensibility.core/lib/dotnet/xunit.core.dll"
-#r "../packages/Unquote/lib/net40/Unquote.dll"
-
-#load "../lib/dayOne.fsx"
-
 open Xunit
 open Swensen.Unquote
 
