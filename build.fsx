@@ -7,17 +7,11 @@
 open Fake
 open Fake.FscHelper
 
-#I "packages/System.Runtime/lib/netcore50/"
-#I "packages/xunit.runner.console/tools/"
-#I "packages/xunit.extensibility.execution/lib/net45/"
-#I "packages/xunit.extensibility.core/lib/portable-net45+win8+wp8+wpa81/"
-#I "packages/Unquote/lib/net40/"
-
 // http://fsharp.github.io/FAKE/fsc.html
 
 // Properties
 let buildDir = "./build/"
-let testDir  = "./test/"
+let testDir  = "./build/test/"
 
 // Targets
 Target "Clean" (fun _ ->
@@ -28,15 +22,22 @@ Target "Clean" (fun _ ->
 Target "Source.dll" (fun _ ->
   ["src/lib/dayOne.fs"] //!! "src/lib/*.fs"
   |> Fsc (fun p ->
-           { p with Output = "Source.dll"
+           { p with Output = "./build/Source.dll"
                     FscTarget = Library })
 )
 
 Target "Tests.dll" (fun _ ->
-  ["src/test/dayOneTests.fs"] //!! "src/spec/*.fs"
+  ["src/spec/dayOneSpec.fs"] //!! "src/spec/*.fs"
   |> Fsc (fun p ->
-            { p with Output = "Tests.dll"
-                     FscTarget = Library })
+            { p with Output = "./build/test/Tests.dll"
+                     FscTarget = Library
+                     References =
+                      [ "packages/System.Runtime/lib/netcore50/System.Runtime.dll"
+                        "packages/xunit.runner.console/tools/xunit.abstractions.dll"
+                        "packages/xunit.extensibility.execution/lib/net45/xunit.execution.desktop.dll"
+                        "packages/xunit.extensibility.core/lib/dotnet/xunit.core.dll"
+                        "packages/Unquote/lib/net40/Unquote.dll"
+                        "build/Source.dll" ] }) 
 )
 
 Target "Default" (fun _ ->

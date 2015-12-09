@@ -1,7 +1,8 @@
+namespace Advent
 open FSharp.Data
 
-module DayOne = 
+module DayOne =
   let someFunky =
     function
-      | 1 -> "one" 
+      | 1 -> "one"
       | _ -> "not one"

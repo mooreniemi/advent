@@ -1,6 +1,7 @@
+namespace Advent
+
 open Xunit
 open Swensen.Unquote
-
 open DayOne
 
 module DayOneTests =
