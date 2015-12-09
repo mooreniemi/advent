@@ -12,6 +12,8 @@ open Fake
 #I "packages/xunit.extensibility.core/lib/portable-net45+win8+wp8+wpa81/"
 #I "packages/Unquote/lib/net40/"
 
+//TODO need to switch to http://fsharp.github.io/FAKE/fsc.html
+
 // Properties
 let buildDir = "./build/"
 let testDir  = "./test/"
