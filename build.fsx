@@ -6,6 +6,7 @@
 
 open Fake
 open Fake.FscHelper
+open Fake.Testing
 
 // http://fsharp.github.io/FAKE/fsc.html
 
@@ -40,6 +41,16 @@ Target "Tests.dll" (fun _ ->
                         "build/Source.dll" ] }) 
 )
 
+// define test dlls
+let testDlls = !! (testDir + "/Tests.dll")
+
+Target "xUnitTest" (fun _ ->
+    testDlls
+        |> xUnit2 (fun p -> 
+            {p with 
+                ShadowCopy = false })
+)
+
 Target "Default" (fun _ ->
     trace "All set."
 )
@@ -48,6 +59,7 @@ Target "Default" (fun _ ->
 "Clean"
   ==> "Source.dll"
   ==> "Tests.dll"
+  ==> "xUnitTest"
   ==> "Default"
 
 // start build
