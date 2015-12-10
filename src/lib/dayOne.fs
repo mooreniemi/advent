@@ -2,7 +2,9 @@ namespace Advent
 open FSharp.Data
 
 module DayOne =
-  let someFunky =
-    function
-      | 1 -> "one"
-      | _ -> "not one"
+  type LightBulb(state) =
+      member x.On = state
+      override x.ToString() =
+          match x.On with
+          | true  -> "On"
+          | false -> "Off"

@@ -27,21 +27,11 @@ Target "Source.dll" (fun _ ->
                     FscTarget = Library })
 )
 
-let dependencies = [ "packages/System.Runtime/lib/netcore50/System.Runtime.dll";
-                    "packages/System.Private.Uri/lib/netcore50/System.Private.Uri.dll";
-                    "packages/System.Diagnostics.Debug/lib/netcore50/System.Diagnostics.Debug.dll";
-                    "packages/System.Reflection/lib/netcore50/System.Reflection.dll";
-                    "packages/System.Threading.Tasks/lib/netcore50/System.Threading.Tasks.dll";
-                    "packages/System.Collections/lib/netcore50/System.Collections.dll";
-                    "packages/System.Linq/ref/netcore50/System.Linq.dll";
-                    "packages/System.Reflection.Extensions/lib/netcore50/System.Reflection.Extensions.dll";
-                    "packages/System.Globalization/lib/netcore50/System.Globalization.dll";
-                    "packages/System.Runtime.Extensions/lib/netcore50/System.Runtime.Extensions.dll";
-                    "packages/xunit.runner.console/tools/xunit.abstractions.dll";
-                    "packages/xunit.extensibility.execution/lib/net45/xunit.execution.desktop.dll";
-                    "packages/xunit.extensibility.core/lib/dotnet/xunit.core.dll";
-                    "packages/Unquote/lib/net40/Unquote.dll";
-                    "build/Source.dll" ]
+let depDlls = [
+                "packages/FsUnit/lib/net45/FsUnit.NUnit.dll"
+                "packages/FsUnit/lib/net45/NHamcrest.dll"
+                "packages/NUnit/lib/nunit.framework.dll"
+                "build/Source.dll" ]
 
 Target "Tests.dll" (fun _ ->
   ["src/spec/dayOneSpec.fs"] //!! "src/spec/*.fs"
@@ -49,17 +39,17 @@ Target "Tests.dll" (fun _ ->
             { p with Output = "./build/test/Tests.dll"
                      FscTarget = Library
                      OtherParams = ["--standalone"]
-                     References = dependencies })
+                     References = depDlls })
 )
 
 // define test dlls
 let testDlls = !! (testDir + "/Tests.dll")
-
-Target "xUnitTest" (fun _ ->
+Target "NUnitTest" (fun _ ->
     testDlls
-        |> xUnit2 (fun p ->
+        |> NUnit (fun p ->
             {p with
-                ShadowCopy = false })
+                DisableShadowCopy = true;
+                OutputFile = testDir + "TestResults.xml"})
 )
 
 Target "Default" (fun _ ->
@@ -70,7 +60,7 @@ Target "Default" (fun _ ->
 "Clean"
   ==> "Source.dll"
   ==> "Tests.dll"
-  ==> "xUnitTest"
+  ==> "NUnitTest"
   ==> "Default"
 
 // start build
