@@ -2,7 +2,7 @@
 
 my attempt to work on F# _outside of an IDE_ on a mac
 
-just mac (using [mono](http://www.mono-project.com/docs/getting-started/install/mac/), vim, & the trusty command line
+just mac (using [mono](http://www.mono-project.com/docs/getting-started/install/mac/)), vim, & the trusty command line
 
 ## :gift: usage
 
