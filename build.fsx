@@ -7,8 +7,8 @@
 open Fake
 open Fake.FscHelper
 open Fake.Testing
+open Fake.FileUtils
 
-// http://fsharp.github.io/FAKE/fsc.html
 
 // Properties
 let buildDir = "./build/"
@@ -19,9 +19,10 @@ Target "Clean" (fun _ ->
     CleanDirs [buildDir; testDir]
 )
 
-// https://github.com/fsharp/FAKE/issues/1037
+// http://fsharp.github.io/FAKE/fsc.html
 Target "Source.dll" (fun _ ->
   ["src/lib/dayOne.fs"] //!! "src/lib/*.fs"
+  // https://github.com/fsharp/FAKE/issues/1037
   |> Fsc (fun p ->
            { p with Output = "./build/Source.dll"
                     FscTarget = Library })
@@ -33,22 +34,29 @@ let depDlls = [
                 "packages/NUnit/lib/nunit.framework.dll"
                 "build/Source.dll" ]
 
+Target "TestDeps" (fun _ ->
+  CopyFiles testDir depDlls
+)
+
 Target "Tests.dll" (fun _ ->
   ["src/spec/dayOneSpec.fs"] //!! "src/spec/*.fs"
   |> Fsc (fun p ->
             { p with Output = "./build/test/Tests.dll"
                      FscTarget = Library
-                     OtherParams = ["--standalone"]
+                     // OtherParams = ["--standalone"]
                      References = depDlls })
 )
 
 // define test dlls
 let testDlls = !! (testDir + "/Tests.dll")
+// http://fsharp.github.io/FAKE/apidocs/fake-nunitcommon.html
 Target "NUnitTest" (fun _ ->
     testDlls
         |> NUnit (fun p ->
-            {p with
-                DisableShadowCopy = true;
+            { p with
+                ToolPath = "packages/NUnit.Runners/tools/"
+                // https://github.com/fsharp/FAKE/issues/1010
+                ToolName = "nunit-console.exe"
                 OutputFile = testDir + "TestResults.xml"})
 )
 
@@ -59,6 +67,7 @@ Target "Default" (fun _ ->
 // Dependencies
 "Clean"
   ==> "Source.dll"
+  ==> "TestDeps"
   ==> "Tests.dll"
   ==> "NUnitTest"
   ==> "Default"

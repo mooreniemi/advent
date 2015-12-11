@@ -4,5 +4,6 @@ source https://nuget.org/api/v2
 nuget FSharp.Data
 nuget fake
 
-nuget nunit
-nuget fsunit
+nuget NUnit ~> 2
+nuget NUnit.Runners ~> 2.6.4
+nuget FSUnit
