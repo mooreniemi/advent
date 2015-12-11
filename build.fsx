@@ -9,10 +9,14 @@ open Fake.FscHelper
 open Fake.Testing
 open Fake.FileUtils
 
-
 // Properties
 let buildDir = "./build/"
 let testDir  = "./build/test/"
+
+let depDlls = [ "packages/FsUnit/lib/net45/FsUnit.NUnit.dll"
+                "packages/FsUnit/lib/net45/NHamcrest.dll"
+                "packages/NUnit/lib/nunit.framework.dll"
+                "build/Source.dll" ]
 
 // Targets
 Target "Clean" (fun _ ->
@@ -28,13 +32,8 @@ Target "Source.dll" (fun _ ->
                     FscTarget = Library })
 )
 
-let depDlls = [
-                "packages/FsUnit/lib/net45/FsUnit.NUnit.dll"
-                "packages/FsUnit/lib/net45/NHamcrest.dll"
-                "packages/NUnit/lib/nunit.framework.dll"
-                "build/Source.dll" ]
-
 Target "TestDeps" (fun _ ->
+  // http://fsharp.github.io/FAKE/apidocs/fake-filehelper.html
   CopyFiles testDir depDlls
 )
 
